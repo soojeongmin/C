@@ -13,6 +13,11 @@ typedef struct list ELEMENT;
 typedef ELEMENT *LINK;
 int correct, question;
 
+void sort()
+{
+
+}
+
 void quiz(LINK head)
 {
 	float score;
@@ -20,8 +25,7 @@ void quiz(LINK head)
 	char ch, answer[15];
 	if(head==NULL)
 	{
-		if(question==0) score = 0;
-		else score = ((float)correct/question)*100;
+		score = ((float)correct/question)*100;
 		printf("당신의 점수는 %.2f 점입니다.\n", score);
 		ch = getchar();
 		while(1)
@@ -41,8 +45,7 @@ void quiz(LINK head)
 		scanf("%s", answer);
 		if(strcmp(answer,".quit")==0)
 		{
-			if(question==0) score=0;
-			else score = ((float)correct/question)*100;
+			score = ((float)correct/question)*100;
 			printf("당신의 점수는 %.2f 점입니다.", score);
 			ch = getchar();
 			while(1)
@@ -76,9 +79,9 @@ void quiz(LINK head)
 int main(void)
 {
 	int choice, count=0;
+	struct list l;
 	FILE *ofp;
-	ELEMENT l;
-	LINK head, temp, prev, p;
+	LINK head, tail, temp;
 
 	ofp = fopen("dic.txt","r");
 	while(1)
@@ -90,38 +93,27 @@ int main(void)
 	fclose(ofp);
 
 	ofp = fopen("dic.txt", "r");
-	for(int i=0;i<count;i++)
+	
+	fscanf(ofp, "%s %s", l.eng, l.kor);
+	head = malloc(sizeof(ELEMENT));
+	tail = head;
+	tail->next = NULL;
+	strcpy(head->eng, l.eng);
+	strcpy(head->kor, l.kor);
+
+	for(int i=0;i<count-1;i++)
 	{
-		fscanf(ofp, "%s %s", l.eng, l.kor);
 		temp = malloc(sizeof(ELEMENT));
-		
+		fscanf(ofp, "%s %s", l.eng, l.kor);
 		strcpy(temp->eng, l.eng);
 		strcpy(temp->kor, l.kor);
 		temp->next = NULL;
-
-		if(head==NULL) head = temp;
-		else
-		{
-			if(strcmp(l.eng, head->eng)<0)
-			{
-				temp->next = head;
-				head = temp;
-			}
-			else
-			{
-				p = head;
-				while(p!=NULL&&(strcmp(l.eng, p->eng)>0))
-				{
-					prev = p;
-					p = p->next;
-				}
-				temp->next = prev->next;
-				prev->next = temp;
-			}
-		}
+		tail->next = temp;
+		tail=temp;
 	}
-	p = head;
 	fclose(ofp);
+
+	// sort();
 
 	while(1)
 	{
